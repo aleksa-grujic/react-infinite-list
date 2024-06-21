@@ -1,32 +1,47 @@
-import './App.css'
-import {ListItem} from "./components";
-import {useQuery} from "@tanstack/react-query";
-import {getCatFacts, getUsers} from "./api/api.ts";
+import { useInView } from 'react-intersection-observer';
+import { ListItem, Skeleton } from './components';
+import { useGetAppData } from './hooks/useGetAppData.ts';
+
+const FETCH_INDEX = 3; // When third last item is in view, fetch next page
 
 function App() {
+  const { ref, inView } = useInView({
+    threshold: 0,
+  });
 
-const {data: facts} = useQuery({
-    queryKey: ['cat-facts'],
-    queryFn:  () => {
-        return getCatFacts(1);
-    }
-})
-    const { data: users } = useQuery({
-        queryKey: ['users'],
-        queryFn:  () => {
-            return getUsers(1);
-        }
-    });
+  const { data, isFetchingNextPage, isFetching } = useGetAppData(inView);
+
+  console.log('isFetchingNextPage', isFetchingNextPage);
+  console.log('isFetching', isFetching);
 
   return (
-      <>
-         <div className="max-w-screen-sm mx-auto bg-gray-300 border-x-2 border-x-gray-300 h-max p-2 flex gap-2.5 flex-col">
-             {facts?.map((fact, index) => {
-                    return <ListItem name={`${users?.[index].name.first || ''} ${users?.[index].name.last || ""}`} description={fact.fact} image={users?.[index].picture.thumbnail || ''}/>
-             })}
-         </div>
-      </>
-  )
+    <div className="max-w-screen-sm mx-auto bg-gray-300 border-x-2 border-x-gray-300 h-max p-2 flex gap-2.5 flex-col">
+      {isFetching ? (
+        <>
+          {Array.from({ length: 10 }).map((_, index) => (
+            <Skeleton key={index} />
+          ))}
+        </>
+      ) : (
+        <>
+          {data?.map(({ fact, user }, index) => {
+            const isTriggerIndex = data.length - FETCH_INDEX === index;
+            const loadLast10Items = isFetchingNextPage && index > data.length - 10;
+            return (
+              <div ref={isTriggerIndex ? ref : undefined} key={fact + user?.name.first}>
+                <ListItem
+                  isLoading={loadLast10Items || !user}
+                  name={`${user?.name.first} ${user?.name.last}`}
+                  description={fact}
+                  image={user?.picture.thumbnail || ''}
+                />
+              </div>
+            );
+          })}
+        </>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;

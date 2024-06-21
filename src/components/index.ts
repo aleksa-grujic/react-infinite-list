@@ -1,3 +1,4 @@
-import {ListItem} from "./ListItem";
+import { ListItem } from './ListItem';
+import { Skeleton } from './Skeleton';
 
-export {ListItem};
+export { ListItem, Skeleton };
