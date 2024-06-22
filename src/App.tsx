@@ -1,6 +1,7 @@
 import { useInView } from 'react-intersection-observer';
-import { ListItem, Skeleton } from './components';
 import { useGetAppData } from './hooks/useGetAppData.ts';
+import { ListItem, Skeleton } from './components';
+import { useCallback } from 'react';
 
 const FETCH_INDEX = 3; // When third last item is in view, fetch next page
 
@@ -9,19 +10,16 @@ function App() {
     threshold: 0,
   });
 
-  const { data, isFetchingNextPage, isFetching } = useGetAppData(inView);
+  const { data, isFetchingNextPage, isFetching, error } = useGetAppData(inView);
 
-  console.log('isFetchingNextPage', isFetchingNextPage);
-  console.log('isFetching', isFetching);
+  const renderSkeletonList = useCallback(() => {
+    return Array.from({ length: 10 }).map((_, index) => <Skeleton key={index} isError={!!error} />);
+  }, [error]);
 
   return (
-    <div className="max-w-screen-sm mx-auto bg-gray-300 border-x-2 border-x-gray-300 h-max p-2 flex gap-2.5 flex-col">
-      {isFetching ? (
-        <>
-          {Array.from({ length: 10 }).map((_, index) => (
-            <Skeleton key={index} />
-          ))}
-        </>
+    <div className="max-w-screen-sm mx-auto bg-gray-300 h-max min-h-screen shadow-inner p-2 flex gap-2.5 flex-col">
+      {isFetching || error ? (
+        renderSkeletonList()
       ) : (
         <>
           {data?.map(({ fact, user }, index) => {

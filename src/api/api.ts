@@ -42,8 +42,7 @@ export const getCatFacts = async (page: number): Promise<CatFacts> => {
     });
     return response.data;
   } catch (error) {
-    console.error(error);
-    return { data: [], current_page: 0, total_page: 0 };
+    throw new Error('Failed to fetch cat facts');
   }
 };
 
@@ -58,7 +57,6 @@ export const getUsers = async (page: number): Promise<Users> => {
     });
     return response.data;
   } catch (error) {
-    console.error(error);
-    return { info: { page: 0 }, results: [] };
+    throw new Error('Failed to fetch users');
   }
 };

@@ -1,9 +1,10 @@
-export const Skeleton = () => {
+export const Skeleton = ({ isError }: { isError: boolean }) => {
+  const bgColor = isError ? 'bg-red-200' : 'bg-gray-300';
   return (
-    <div className={'max-w-full h-28 rounded-lg bg-gray-100 p-2 shadow'}>
+    <div className={`max-w-full h-28 rounded-lg bg-gray-100 p-2 shadow`}>
       <div className="max-w-full animate-pulse">
         <div className={'flex gap-2 items-center mb-4'}>
-          <div className="grid rounded-full w-10 h-10 place-items-center bg-gray-300">
+          <div className={`grid rounded-full w-10 h-10 place-items-center ${bgColor}`}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -19,10 +20,10 @@ export const Skeleton = () => {
               />
             </svg>
           </div>
-          <span className={'h-3 w-56 rounded-full bg-gray-300'} />
+          <span className={`h-3 w-56 rounded-full ${bgColor}`} />
         </div>
-        <div className={'mb-2 h-2 w-96 rounded-full bg-gray-300'} />
-        <div className={'mb-2 h-2 w-72 rounded-full bg-gray-300'} />
+        <div className={`mb-2 h-2 w-96 rounded-full ${bgColor}`} />
+        <div className={`mb-2 h-2 w-72 rounded-full ${bgColor}`} />
       </div>
     </div>
   );
