@@ -17,7 +17,7 @@ function App() {
   }, [error]);
 
   return (
-    <div className="max-w-screen-sm mx-auto bg-gray-300 h-max min-h-screen shadow-inner p-2 flex gap-2.5 flex-col">
+    <div className="max-w-screen-sm mx-auto bg-gray-200 h-max min-h-screen shadow-inner px-8 py-4 flex gap-2.5 flex-col">
       {isFetching || error ? (
         renderSkeletonList()
       ) : (
